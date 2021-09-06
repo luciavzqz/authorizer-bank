@@ -19,8 +19,10 @@ Design decisions
 - **Maven as the build automation tool**.
 - **Junit for tests**: I chose Junit to run tests because I have previous experience with it.
 - **Design pattens**: I chose the chain of responsibility pattern for the application of business rules, as it allows for easy insertion of future new business rules, complying with the SOLID principles of single responsibility and open/closed, and also allows for easy future modification of the chain of responsibility.
-- **Plugins**: I used Lombok as a plugin to achieve a cleaner code.
 - **JSON parser**: I chose Jackson as a JSON parser due to it has the best performance when working with large files.
+- **Plugins**:
+  - I used Lombok as a plugin to achieve a cleaner code.
+  - I used the maven-assembly plugin in order to build the application with the Jackson dependency.
 
 How to run the project
 ---
@@ -29,12 +31,12 @@ How to run the project
 2. *Generates the java .jar application.* Position yourself in the root of the project with the console and run:
 
 
-    mvn clean package
+    mvn clean install
 
 3. *Run the application.* From the root of the project you can enter the following command, where "operations" is the full path to the operations file.
    
     
-    java -jar ./target/authorizer-1.0.jar operations
+    java -jar ./target/authorizer-1.0-jar-with-dependencies.jar operations
 
 4. *Get the result.* The file with the application response will remain in the root of the project. You can see it running:
 

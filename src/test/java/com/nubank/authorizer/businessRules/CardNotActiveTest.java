@@ -30,7 +30,7 @@ public class CardNotActiveTest {
     @Test
     @DisplayName("Card is active")
     void cardActive() {
-        Rule rule = new CardNotActive(null);
+        BusinessRule businessRule = new CardNotActive(null);
 
         /*
            # Input
@@ -60,7 +60,7 @@ public class CardNotActiveTest {
         out.add(new ValidatedTransaction(a3, new AuthorizedTransaction(true,100, new ArrayList<>())));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that the card is active");
     }
@@ -68,7 +68,7 @@ public class CardNotActiveTest {
     @Test
     @DisplayName("Card is not active")
     void cardNotActive() {
-        Rule rule = new CardNotActive(null);
+        BusinessRule businessRule = new CardNotActive(null);
 
         /*
            # Input
@@ -101,7 +101,7 @@ public class CardNotActiveTest {
         out.add(new ValidatedTransaction(a3, new AuthorizedTransaction(false,100, violations)));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that the card is not active");
     }

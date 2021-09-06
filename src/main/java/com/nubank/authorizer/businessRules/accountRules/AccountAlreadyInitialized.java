@@ -1,6 +1,6 @@
 package com.nubank.authorizer.businessRules.accountRules;
 
-import com.nubank.authorizer.businessRules.Rule;
+import com.nubank.authorizer.businessRules.BusinessRule;
 import com.nubank.authorizer.entities.Account;
 import com.nubank.authorizer.entities.AuthorizedTransaction;
 import com.nubank.authorizer.entities.ValidatedTransaction;
@@ -9,10 +9,17 @@ import com.nubank.authorizer.enums.TransactionType;
 import java.util.List;
 import java.util.Optional;
 
-public class AccountAlreadyInitialized extends Rule {
+/**
+ *  Determines whether an account has already been initialized in the transaction set and invalidates subsequent
+ *  transactions.
+ *
+ *  Example: given there is an account with an active card ( active-card: true ) and the available limit of 175
+ *  ( available-limit: 175 ), tries to create another account but return the account-already-initialized violation.
+ */
+public class AccountAlreadyInitialized extends BusinessRule {
 
-    public AccountAlreadyInitialized(Rule nextRule) {
-        super(nextRule);
+    public AccountAlreadyInitialized(BusinessRule nextBusinessRule) {
+        super(nextBusinessRule);
     }
 
     @Override
@@ -20,6 +27,7 @@ public class AccountAlreadyInitialized extends Rule {
         Optional<Account> accountInitializedOpt = Optional.empty();
         for (ValidatedTransaction dataItem: data) {
             if(dataItem.getTransactionType().equals(TransactionType.ACCOUNT)){
+                // Determines the logic if it were an account TransactionType.
                 if(accountInitializedOpt.isPresent()) {
                     AuthorizedTransaction authorizedTransaction = dataItem.getAuthorizedTransaction();
                     Account accountInitialized = accountInitializedOpt.get();
@@ -35,7 +43,8 @@ public class AccountAlreadyInitialized extends Rule {
                     authorizedTransaction.setActiveCard(accountInitializedOpt.get().getActiveCard());
                     authorizedTransaction.setAvailableLimit(accountInitializedOpt.get().getAvailableLimit());
                 }
-            } else { // transaction
+            } else {
+                // Determines the logic if it were a transaction TransactionType.
                 if(accountInitializedOpt.isPresent()) {
                     AuthorizedTransaction authorizedTransaction = dataItem.getAuthorizedTransaction();
                     Account accountInitialized = accountInitializedOpt.get();

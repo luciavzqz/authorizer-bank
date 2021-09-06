@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Provides services to facilitate the reading and formatting of data obtained from a file.
+ */
 public class FormatterService {
 
     private static final String ACCOUNT = "account";
@@ -26,12 +29,22 @@ public class FormatterService {
     private static final String AMOUNT = "amount";
     private static final String TIME = "time";
 
+    /**
+     * Gets the data from a given file.
+     * @param file the file.
+     * @return the data from a given file.
+     */
     public List<Object> getDataFromFile(final File file) {
         List<String> formattedFile = formatFile(file);
         return formatData(formattedFile);
     }
 
-    public List<String> formatFile(final File file) {
+    /**
+     * Gets the lines of text in a given file.
+     * @param file the file.
+     * @return the lines of text in a given file.
+     */
+    private List<String> formatFile(final File file) {
         List<String> jsonStringList = new ArrayList<>();
         try (Stream<String> lines = Files.lines(Paths.get(file.getAbsolutePath()))){
             jsonStringList = lines.collect(Collectors.toList());
@@ -41,33 +54,16 @@ public class FormatterService {
         return jsonStringList;
     }
 
-    public List<Object> formatData(final List<String> data) {
+    /**
+     * Gets a list of objects with the transactions from the given list of text lines.
+     * @param data the list of text lines.
+     * @return a list of objects with the transactions from the given list of text lines.
+     */
+    private List<Object> formatData(final List<String> data) {
         List<Object> formattedData = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
 
         for (String line : data) {
-
-        // TODO : DELETE
-//            Map<String, String> map = null;
-//            try {
-//                map = mapper.readValue(line, Map.class);
-//
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                String value;
-//                if(map.containsKey(ACCOUNT)) {
-//                    value = map.get(ACCOUNT);
-//                    Account account = objectMapper.readValue(value, Account.class);
-//                    formattedData.add(account);
-//                }
-//                else { //contains TRANSACTION
-//                    value = map.get(TRANSACTION);
-//                    Transaction transaction = objectMapper.readValue(value, Transaction.class);
-//                    formattedData.add(transaction);
-//                }
-//            } catch (JsonProcessingException e) {
-//                e.printStackTrace();
-//            }
-
             Map<String, Map<String, Object>> map = null;
             try {
                 map = mapper.readValue(line, Map.class);

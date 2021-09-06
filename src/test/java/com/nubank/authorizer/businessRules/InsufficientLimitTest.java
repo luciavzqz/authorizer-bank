@@ -1,6 +1,5 @@
 package com.nubank.authorizer.businessRules;
 
-import com.nubank.authorizer.businessRules.transactionRules.CardNotActive;
 import com.nubank.authorizer.businessRules.transactionRules.InsufficientLimit;
 import com.nubank.authorizer.entities.Account;
 import com.nubank.authorizer.entities.AuthorizedTransaction;
@@ -30,7 +29,7 @@ public class InsufficientLimitTest {
     @Test
     @DisplayName("Available limit is sufficient")
     void sufficientLimit() {
-        Rule rule = new InsufficientLimit(null);
+        BusinessRule businessRule = new InsufficientLimit(null);
 
         /*
            # Input
@@ -64,7 +63,7 @@ public class InsufficientLimitTest {
         out.add(new ValidatedTransaction(a4, new AuthorizedTransaction(true,10000, new ArrayList<>())));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that the available limit is sufficient");
     }
@@ -72,7 +71,7 @@ public class InsufficientLimitTest {
     @Test
     @DisplayName("CardIsNotActive")
     void cardNotActive() {
-        Rule rule = new InsufficientLimit(null);
+        BusinessRule businessRule = new InsufficientLimit(null);
 
         /*
            # Input
@@ -106,7 +105,7 @@ public class InsufficientLimitTest {
         out.add(new ValidatedTransaction(a4, new AuthorizedTransaction(false,10000, new ArrayList<>())));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that the available limit is sufficient");
     }
@@ -114,7 +113,7 @@ public class InsufficientLimitTest {
     @Test
     @DisplayName("Available limit is insufficient")
     void insufficientLimit() {
-        Rule rule = new InsufficientLimit(null);
+        BusinessRule businessRule = new InsufficientLimit(null);
 
         /*
            # Input
@@ -152,7 +151,7 @@ public class InsufficientLimitTest {
         out.add(new ValidatedTransaction(a4, new AuthorizedTransaction(true,1000, new ArrayList<>())));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that the available limit is insufficient");
     }

@@ -1,15 +1,10 @@
 package com.nubank.authorizer.services;
 
-import com.nubank.authorizer.entities.Account;
 import com.nubank.authorizer.entities.AuthorizedTransaction;
-import com.nubank.authorizer.entities.Transaction;
-import com.nubank.authorizer.entities.ValidatedTransaction;
 import com.nubank.authorizer.enums.RuleValidator;
-import com.nubank.authorizer.interfaces.GenericTransaction;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

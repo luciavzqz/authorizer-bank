@@ -12,11 +12,18 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 @Setter
+/**
+ * It represents a validated and authorized transaction, either an account or transaction type.
+ */
 public class AuthorizedTransaction {
     private Boolean activeCard;
     private Integer availableLimit;
     private List<String> violations;
 
+    /**
+     * Gets the formatted data in a text string.
+     * @return the formatted data in a text string.
+     */
     @Override
     public String toString() {
         String s;

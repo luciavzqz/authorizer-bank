@@ -3,6 +3,9 @@ package com.nubank.authorizer.enums;
 import lombok.Getter;
 
 @Getter
+/**
+ *  Contains the names of the current validations of the business rules system.
+ */
 public enum RuleValidator {
     DOUBLE_TRANSACTION("double-transaction"),
     HIGH_FREQUENCY_SMALL_INTERVAL("high-frequency-small-interval"),

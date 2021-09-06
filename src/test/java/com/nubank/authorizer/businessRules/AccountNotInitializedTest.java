@@ -29,7 +29,7 @@ public class AccountNotInitializedTest {
     @Test
     @DisplayName("Account is not initialized")
     void accountNotInitialized() {
-        Rule rule = new com.nubank.authorizer.businessRules.transactionRules.AccountNotInitialized(null);
+        BusinessRule businessRule = new com.nubank.authorizer.businessRules.transactionRules.AccountNotInitialized(null);
 
         GenericTransaction a1 = new Transaction("Uber Eats", 750, LocalDateTime.parse("2020-12-01T11:07:00.000Z",formatter));
         GenericTransaction a2 = new Account(true, 750);
@@ -50,7 +50,7 @@ public class AccountNotInitializedTest {
         out.add(new ValidatedTransaction(a3, new AuthorizedTransaction(true,750, new ArrayList<>())));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that the account is not initialized");
     }

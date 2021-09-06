@@ -6,7 +6,6 @@ import com.nubank.authorizer.entities.Account;
 import com.nubank.authorizer.entities.AuthorizedTransaction;
 import com.nubank.authorizer.entities.Transaction;
 import com.nubank.authorizer.entities.ValidatedTransaction;
-import com.nubank.authorizer.enums.RuleValidator;
 import com.nubank.authorizer.enums.TransactionType;
 import com.nubank.authorizer.interfaces.GenericTransaction;
 import com.nubank.authorizer.interfaces.RulesManager;
@@ -14,6 +13,9 @@ import com.nubank.authorizer.interfaces.RulesManager;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  It is the business rules manager.
+ */
 public class BusinessRulesManager implements RulesManager {
 
     /**
@@ -23,32 +25,32 @@ public class BusinessRulesManager implements RulesManager {
      */
     @Override
     public List<AuthorizedTransaction> runValidators(List<Object> data) {
-        Rule firstRule = getChainOfValidators();
+        BusinessRule firstBusinessRule = getChainOfValidators();
         List<ValidatedTransaction> transactionsUnvalidated = formatData(data);
-        List<ValidatedTransaction> validatedTransactions = firstRule.runValidator(transactionsUnvalidated);
+        List<ValidatedTransaction> validatedTransactions = firstBusinessRule.runValidator(transactionsUnvalidated);
         validatedTransactions = updateAvailableLimit(validatedTransactions);
         return formatValidatedTransactionList(validatedTransactions);
     }
 
     /**
      * This method defines the order of the validators according to the chain of responsibility pattern.
-     * @return the chain of validators
+     * @return the chain of validators.
      */
-    private Rule getChainOfValidators() {
-        Rule highFrequencySmallInterval = new HighFrequencySmallInterval(null);
-        Rule doubleTransaction = new DoubleTransaction(highFrequencySmallInterval);
-        Rule insufficientLimit = new InsufficientLimit(doubleTransaction);
-        Rule cardNotActive = new CardNotActive(insufficientLimit);
-        Rule accountNotInitialized = new AccountNotInitialized(cardNotActive);
-        Rule accountAlreadyInitialized = new AccountAlreadyInitialized(accountNotInitialized);
+    private BusinessRule getChainOfValidators() {
+        BusinessRule highFrequencySmallInterval = new HighFrequencySmallInterval(null);
+        BusinessRule doubleTransaction = new DoubleTransaction(highFrequencySmallInterval);
+        BusinessRule insufficientLimit = new InsufficientLimit(doubleTransaction);
+        BusinessRule cardNotActive = new CardNotActive(insufficientLimit);
+        BusinessRule accountNotInitialized = new AccountNotInitialized(cardNotActive);
+        BusinessRule accountAlreadyInitialized = new AccountAlreadyInitialized(accountNotInitialized);
 
         return accountAlreadyInitialized;
     }
 
     /**
      * Formats the data to a data type known to the rules.
-     * @param data the data to be formatted
-     * @return the formatted data
+     * @param data the data to be formatted.
+     * @return the formatted data.
      */
     public List<ValidatedTransaction> formatData(List<Object> data) {
         List<ValidatedTransaction> validatedTransactions = new ArrayList<>();
@@ -63,7 +65,7 @@ public class BusinessRulesManager implements RulesManager {
 
     /**
      * Updates the available limits in the list according to whether or not they have violations.
-     * @param data the list of transactions to be updated
+     * @param data the list of transactions to be updated.
      * @return the list of available limits updated on all transactions.
      */
     private List<ValidatedTransaction> updateAvailableLimit(List<ValidatedTransaction> data) {
@@ -72,20 +74,24 @@ public class BusinessRulesManager implements RulesManager {
 
         for (ValidatedTransaction currentItem: data) {
             if(currentItem.getTransactionType().equals(TransactionType.ACCOUNT)){
+                // Determines the logic if it were an account TransactionType.
                 if(!accountInitialized) {
                     accountInitialized = true;
                     Account account = (Account) currentItem.getTransaction();
                     currentAvailableLimit = account.getAvailableLimit();
                 }
-            } else { // transaction
+            } else {
+                // Determines the logic if it were a transaction TransactionType.
                 AuthorizedTransaction authorizedTransaction = currentItem.getAuthorizedTransaction();
+                Transaction transaction = (Transaction) currentItem.getTransaction();
                 if(authorizedTransaction.getViolations().isEmpty()) {
-                    Transaction transaction = (Transaction) currentItem.getTransaction();
                     Integer newAvailableLimit = currentAvailableLimit - transaction.getAmount();
                     if (newAvailableLimit >= 0) {
                         currentAvailableLimit = newAvailableLimit;
                         authorizedTransaction.setAvailableLimit(currentAvailableLimit);
                     }
+                } else {
+                    authorizedTransaction.setAvailableLimit(currentAvailableLimit);
                 }
             }
         }
@@ -94,7 +100,7 @@ public class BusinessRulesManager implements RulesManager {
 
     /**
      * Converts the list with all data into a simple list of authorized transactions.
-     * @param validatedTransactions the uncompressed list of validated transactions
+     * @param validatedTransactions the uncompressed list of validated transactions.
      * @return the compressed list of validated transactions.
      */
     public List<AuthorizedTransaction> formatValidatedTransactionList(List<ValidatedTransaction> validatedTransactions) {

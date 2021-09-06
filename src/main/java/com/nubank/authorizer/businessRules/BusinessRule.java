@@ -11,19 +11,32 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 @Setter
-public abstract class Rule {
-    public Rule nextRule;
+/**
+ *  Represents the abstract class of a business rule. It is used for the application of the chain of responsibility pattern.
+ */
+public abstract class BusinessRule {
+    public BusinessRule nextBusinessRule;
 
+    /**
+     * Contains the logic to run the validator and know if it should pass task to another business rule.
+     * @param data the list of transactions to be validated.
+     * @return list of validated transactions.
+     */
     public List<ValidatedTransaction> runValidator(List<ValidatedTransaction> data){
         List<ValidatedTransaction> validatedTransactions = validate(data);
 
-        Optional<Rule> nextRuleOptional = Optional.ofNullable(getNextRule());
+        Optional<BusinessRule> nextRuleOptional = Optional.ofNullable(getNextBusinessRule());
         if(nextRuleOptional.isPresent()) {
             return nextRuleOptional.get().runValidator(validatedTransactions);
         }
         return validatedTransactions;
     }
 
+    /**
+     * Contains the validator's own logic.
+     * @param data the list of transactions to be validated.
+     * @return the list of validated transactions.
+     */
     protected abstract List<ValidatedTransaction> validate(List<ValidatedTransaction> data);
 
 }

@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+/**
+ * It represents a generic transaction of type transaction.
+ */
 public class Transaction  implements GenericTransaction {
     private String merchant;
     private Integer amount;

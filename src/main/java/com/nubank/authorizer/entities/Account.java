@@ -10,6 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+/**
+ * It represents a generic transaction of type account.
+ */
 public class Account implements GenericTransaction {
     private Boolean activeCard;
     private Integer availableLimit;

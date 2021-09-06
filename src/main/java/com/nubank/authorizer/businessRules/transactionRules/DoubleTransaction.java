@@ -1,7 +1,6 @@
 package com.nubank.authorizer.businessRules.transactionRules;
 
-import com.nubank.authorizer.businessRules.Rule;
-import com.nubank.authorizer.entities.Account;
+import com.nubank.authorizer.businessRules.BusinessRule;
 import com.nubank.authorizer.entities.AuthorizedTransaction;
 import com.nubank.authorizer.entities.Transaction;
 import com.nubank.authorizer.entities.ValidatedTransaction;
@@ -9,19 +8,26 @@ import com.nubank.authorizer.enums.RuleValidator;
 import com.nubank.authorizer.enums.TransactionType;
 
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-public class DoubleTransaction extends Rule {
+/**
+ *  Determines that a transaction is not valid if in the same 2 minutes time window there has already been another
+ *  transaction to the same merchant and with the same amount.
+ *
+ *  Example: given an account with an active card ( active-card: true ), the available limit of 100 ( available-limit:
+ *  100 ) and some transactions that occurred successfully in the last 2 minutes. The authorizer should reject the new
+ *  transaction if it shares the same amount and merchant as any of previously accepted transactions and return the
+ *  doubled-transaction violation.
+ */
+public class DoubleTransaction extends BusinessRule {
 
     private static final int INTERVAL_MINUTES = 2;
 
-    public DoubleTransaction(Rule nextRule) {
-        super(nextRule);
+    public DoubleTransaction(BusinessRule nextBusinessRule) {
+        super(nextBusinessRule);
     }
 
     @Override
@@ -30,6 +36,7 @@ public class DoubleTransaction extends Rule {
 
         for (ValidatedTransaction currentItem: data) {
             if(currentItem.getTransactionType().equals(TransactionType.TRANSACTION)){
+                // Determines the logic if it were a transaction TransactionType.
                 Transaction transaction = (Transaction) currentItem.getTransaction();
                 AuthorizedTransaction authorizedTransaction = currentItem.getAuthorizedTransaction();
 
@@ -60,7 +67,6 @@ public class DoubleTransaction extends Rule {
                 }
             }
         }
-
         return data;
     }
 }

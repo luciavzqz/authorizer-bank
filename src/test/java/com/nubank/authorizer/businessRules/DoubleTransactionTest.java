@@ -30,7 +30,7 @@ public class DoubleTransactionTest {
     @Test
     @DisplayName("There isn't double transaction")
     void notDoubleTransactions() {
-        Rule rule = new DoubleTransaction(null);
+        BusinessRule businessRule = new DoubleTransaction(null);
 
         /*
            # Input
@@ -73,7 +73,7 @@ public class DoubleTransactionTest {
         out.add(new ValidatedTransaction(a5, new AuthorizedTransaction(true,100, new ArrayList<>())));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that there is not double transaction");
     }
@@ -81,7 +81,7 @@ public class DoubleTransactionTest {
     @Test
     @DisplayName("There is double transactions")
     void doubleTransactions() {
-        Rule rule = new DoubleTransaction(null);
+        BusinessRule businessRule = new DoubleTransaction(null);
 
         /*
            # Input
@@ -124,7 +124,7 @@ public class DoubleTransactionTest {
         out.add(new ValidatedTransaction(a5, new AuthorizedTransaction(true,100, new ArrayList<>())));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that there are double transactions");
     }
@@ -132,7 +132,7 @@ public class DoubleTransactionTest {
     @Test
     @DisplayName("There is double transaction")
     void doubleTransaction() {
-        Rule rule = new DoubleTransaction(null);
+        BusinessRule businessRule = new DoubleTransaction(null);
 
         /*
            # Input
@@ -175,7 +175,7 @@ public class DoubleTransactionTest {
         out.add(new ValidatedTransaction(a5, new AuthorizedTransaction(true,100, new ArrayList<>())));
 
         assertEquals(
-                rule.runValidator(in),
+                businessRule.runValidator(in),
                 out,
                 "It is not identified that there is double transaction");
     }
